@@ -199,9 +199,13 @@ def handle_specific_snapshots(player):
 
     and a.rated=1
     and ( a.black = '{player}' or a.white = '{player}')
-    and a.playtime  >= 600 and a.playtime <= 900
+    and (a.playtime + 40 * a.increment) >= 480 
+    and (a.playtime + 40 * a.increment) < 1499 
 
     ''')
+
+    #< 479s = Blitz
+    #< 1499s = Rapid
 
     table_rows = db_cursor.fetchall()    
     df = pd.DataFrame(table_rows,columns=db_cursor.column_names)  
