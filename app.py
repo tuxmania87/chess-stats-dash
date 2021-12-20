@@ -68,7 +68,7 @@ def assign_daytime(ts):
     return "evening"
 
 
-home_dir = "" if platform.system() == "Windows" else "/home/robert/chess-stats-dash"
+home_dir = "" if platform.system() == "Windows" else "/home/robert/chess-stats-dash/"
 
 print("HOME_DIR" , home_dir, platform.system())
 
@@ -80,12 +80,6 @@ cc = config["DEFAULT"]
 
 for p in cc["PLAYERS_SF"].split(","):
     frame_dict[p] = pd.read_csv(f"{home_dir}snapshot_{p}.csv")
-
-frame_dict["fettarmqp"] = pd.read_csv("snapshot_fettarmqp.csv")
-frame_dict["ultimaratio4"] = pd.read_csv("snapshot_ultimaratio4.csv")
-frame_dict["paff-morris"] = pd.read_csv("snapshot_paff-morris.csv")
-frame_dict["tuxmania"] = pd.read_csv("snapshot_tuxmania.csv")
-frame_dict["therealknox"] = pd.read_csv("snapshot_therealknox.csv")
 
 for k in frame_dict.keys():
     _df = frame_dict[k]
