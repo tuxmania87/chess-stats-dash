@@ -3,6 +3,7 @@ import stockfish
 import sys
 import configparser
 from multiprocessing import Pool
+import os
 
 class ChessGameParser:
 
@@ -96,5 +97,13 @@ class ChessGameParser:
 
 
 if __name__=="__main__":
+
+    if os.path.isfile("INPROGRESS_SF"):
+        exit(0)
+
+    open("INPROGRESS_SF","a").close()
+
     x = ChessGameParser()
     x.parse_SF()
+
+    os.remove("INPROGRESS_SF")

@@ -306,6 +306,17 @@ class ChessGameParser:
                 print(e)
             cnx2.close()
 
+# check if running
+import os.path
+if os.path.isfile("INPROGRESS"):
+    exit(0)
+
+open("INPROGRESS","a").close()
+
+
+
+
+
 
 x = ChessGameParser()
 
@@ -314,8 +325,13 @@ players = x.cc["PLAYERS_PARSE"].split(",")
 for p in players:
     print(f"Handle {p}")
     x.insert_new_lichess_games(p)
+    time.sleep(1)
 #x.insert_old_tuxmania_games()
 #print("handle new chess com games")
 #x.insert_new_chesscom_games()
 
 x.parse_new_games()
+
+
+os.remove("INPROGRESS")
+
