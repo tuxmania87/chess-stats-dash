@@ -50,7 +50,7 @@ class ChessGameParser:
 
     def parse_SF(self):
 
-        players= self.cc["PLAYERS"].split(",")
+        players= self.cc["PLAYERS_SF"].split(",")
 
         joined_string = ','.join([ "'lichess.org "+ x+"'" for x in players])
 

@@ -309,7 +309,7 @@ class ChessGameParser:
 
 x = ChessGameParser()
 
-players = x.cc["PLAYERS"].split()
+players = x.cc["PLAYERS_PARSE"].split()
 
 for p in players:
     print(f"Handle {p}")

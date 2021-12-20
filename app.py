@@ -12,7 +12,7 @@ from numpy.core.numeric import roll
 import pandas as pd
 import time
 
-import glob
+import configparser
 
 
 import os
@@ -68,13 +68,18 @@ def assign_daytime(ts):
     return "evening"
 
 
-home_dir = "" if platform.system() == "windows" else "/home/robert/"
+home_dir = "" if platform.system() == "windows" else "/home/robert/chess-stats-dash"
 
 
 
 frame_dict = {}
 
-for file in (glob.glob("/home/adam/*"))
+config = configparser.ConfigParser()
+config.read(f"{home_dir}general.conf")
+cc = config["DEFAULT"]
+
+for p in cc["PLAYERS_SF"].split(","):
+    frame_dict[p] = pd.read_csv(f"{home_dir}snapshot_{p}.csv")
 
 frame_dict["fettarmqp"] = pd.read_csv("snapshot_fettarmqp.csv")
 frame_dict["ultimaratio4"] = pd.read_csv("snapshot_ultimaratio4.csv")
