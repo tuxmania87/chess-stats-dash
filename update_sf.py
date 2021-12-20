@@ -88,7 +88,7 @@ class ChessGameParser:
         cnx.close()
     
 
-        with Pool(8) as p:
+        with Pool(3) as p:
             p.starmap(self.parse_SF_do_update, zip(_gamedata.keys(), _gamedata.values()))
 
         

@@ -253,7 +253,7 @@ def handle_specific_snapshots(player):
 config = configparser.ConfigParser()
 config.read("general.conf")
 cc = config["DEFAULT"]
-players = cc["PLAYERS"].split(",")
+players = cc["PLAYERS_SF"].split(",")
 
 for p in players:
     handle_specific_snapshots(p)

@@ -8,7 +8,7 @@ import io
 
 def get_stockfish_list(pgn):
 
-    engine = chess.engine.SimpleEngine.popen_uci(r"E:\sf141\stockfish_14.1_win_x64_avx2.exe")
+    engine = chess.engine.SimpleEngine.popen_uci(r"/home/robert/python_notebooks/stockfish_20090216_x64")
     game = chess.pgn.read_game(io.StringIO(pgn))
 
     l = []

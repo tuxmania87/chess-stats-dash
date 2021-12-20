@@ -309,11 +309,11 @@ class ChessGameParser:
 
 x = ChessGameParser()
 
-players = x.cc["PLAYERS_PARSE"].split()
+players = x.cc["PLAYERS_PARSE"].split(",")
 
 for p in players:
     print(f"Handle {p}")
-    x.insert_new_lichess_games("p")
+    x.insert_new_lichess_games(p)
 #x.insert_old_tuxmania_games()
 #print("handle new chess com games")
 #x.insert_new_chesscom_games()
