@@ -17,7 +17,7 @@ class ChessGameParser:
 
         config = configparser.ConfigParser()
         config.read("general.conf")
-        cc = config["DEFAULT"]
+        self.cc = config["DEFAULT"]
 
 
         self.sql_host = self.cc["HOST"]
