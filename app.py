@@ -78,7 +78,9 @@ config = configparser.ConfigParser()
 config.read(f"{home_dir}general.conf")
 cc = config["DEFAULT"]
 
-for p in cc["PLAYERS_SF"].split(","):
+players = cc["PLAYERS_SF"].split(",")
+
+for p in players:
     frame_dict[p] = pd.read_csv(f"{home_dir}snapshot_{p}.csv")
 
 for k in frame_dict.keys():
@@ -196,13 +198,7 @@ app.layout = html.Div([
         html.Span('Choose name', style={'font-weight': 'bold'}),
         dcc.Dropdown(
         id='input-player',
-        options=[
-            {'label': 'FettarmQP', 'value': 'fettarmqp'},
-            {'label': 'UltimaRatio4', 'value': 'ultimaratio4'},
-            {'label': 'Paff-Morris', 'value': 'paff-morris'},
-            {'label': 'TheRealKnox', 'value': 'therealknox'},
-            {'label': 'Tuxmania', 'value': 'tuxmania'},
-        ],
+        options=[ {'label': x , 'value': x } for x in players],
         value='fettarmqp',
         className="dash-bootstrap"
     ),
