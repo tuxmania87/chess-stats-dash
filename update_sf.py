@@ -50,7 +50,7 @@ class ChessGameParser:
 
     def parse_SF(self):
 
-        players= self.cc["PLAYERS_SF"].split(",")
+        players= self.cc["PLAYERS_PARSE"].split(",")
 
         joined_string = ','.join([ "'lichess.org "+ x+"'" for x in players])
 
@@ -88,7 +88,7 @@ class ChessGameParser:
         cnx.close()
     
 
-        with Pool(3) as p:
+        with Pool(int(self.cc["DOP"])) as p:
             p.starmap(self.parse_SF_do_update, zip(_gamedata.keys(), _gamedata.values()))
 
         

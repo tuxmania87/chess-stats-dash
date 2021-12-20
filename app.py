@@ -68,9 +68,9 @@ def assign_daytime(ts):
     return "evening"
 
 
-home_dir = "" if platform.system() == "windows" else "/home/robert/chess-stats-dash"
+home_dir = "" if platform.system() == "Windows" else "/home/robert/chess-stats-dash"
 
-
+print("HOME_DIR" , home_dir, platform.system())
 
 frame_dict = {}
 

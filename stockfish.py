@@ -3,12 +3,17 @@ import chess.pgn
 import chess.engine
 import sys
 import io
+import configparser
 
 
 
 def get_stockfish_list(pgn):
 
-    engine = chess.engine.SimpleEngine.popen_uci(r"/home/robert/python_notebooks/stockfish_20090216_x64")
+    config = configparser.ConfigParser()
+    config.read("general.conf")
+    cc = config["DEFAULT"]
+
+    engine = chess.engine.SimpleEngine.popen_uci(cc["SF_LOCATION"])
     game = chess.pgn.read_game(io.StringIO(pgn))
 
     l = []
