@@ -79,6 +79,7 @@ config.read(f"{home_dir}general.conf")
 cc = config["DEFAULT"]
 
 players = cc["PLAYERS_SF"].split(",")
+players = sorted(players)
 
 for p in players:
     frame_dict[p] = pd.read_csv(f"{home_dir}snapshot_{p}.csv")
