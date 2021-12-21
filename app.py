@@ -259,6 +259,10 @@ app.layout = html.Div([
     dcc.Graph(id='graph-phasis-cploss', className='container'),
     dcc.Graph(id='graph-phasis-result', className='container'),
 
+    dcc.Graph(id='graph-wintype', className='container'),
+    dcc.Graph(id='graph-drawtype', className='container'),
+    dcc.Graph(id='graph-losstype', className='container'),
+
     dcc.Graph(id='graph-gtype', className='container'),
     dcc.Graph(id='graph-gtype-cploss', className='container'),
     dcc.Graph(id='graph-gtype-result', className='container'),
@@ -926,6 +930,129 @@ def update_graph_phasis_result(player_name, time_control, min_date, max_date):
 
     return fig 
 
+
+### type of game end
+
+@app.callback(Output('graph-wintype', 'figure'),
+              [Input('input-player','value'), Input('dropdown-timecontrol','value'),Input('date-picker', 'start_date'),Input('date-picker', 'end_date')])
+def update_graph_wintype(player_name, time_control, min_date, max_date):
+
+    df = frame_dict[player_name.lower()]
+
+    df = df[(df["PlayedOn"] >= min_date) & (df["PlayedOn"] <= max_date)]
+
+    df = df[df["win"] == 1]
+
+    xx = df[["id","outcome"]].groupby(["outcome"]).count().reset_index()
+
+    xx.columns = ["outcome","#games"]
+
+    fig = go.Figure(
+        data=[go.Pie(labels=xx["outcome"], values=xx["#games"], hole=.3)]
+    )
+
+
+    fig.update_layout(
+        
+        autosize=False,
+        #width=1000,
+        #height=400,
+        #paper_bgcolor='rgba(0,0,0,0)',
+        #plot_bgcolor='rgba(0,0,0,0)',
+        title={
+            'text': "Reason for win",
+            #'y':0.96,
+            'x':0.5,
+            'xanchor': 'center',
+            'yanchor': 'top'},
+        barmode='stack',
+        template="plotly_dark",
+    )
+
+    
+
+    return fig 
+
+
+@app.callback(Output('graph-drawtype', 'figure'),
+              [Input('input-player','value'), Input('dropdown-timecontrol','value'),Input('date-picker', 'start_date'),Input('date-picker', 'end_date')])
+def update_graph_drawtype(player_name, time_control, min_date, max_date):
+
+    df = frame_dict[player_name.lower()]
+
+    df = df[(df["PlayedOn"] >= min_date) & (df["PlayedOn"] <= max_date)]
+
+    df = df[df["draw"] == 1]
+
+    xx = df[["id","outcome"]].groupby(["outcome"]).count().reset_index()
+
+    xx.columns = ["outcome","#games"]
+
+    fig = go.Figure(
+        data=[go.Pie(labels=xx["outcome"], values=xx["#games"], hole=.3)]
+    )
+
+
+    fig.update_layout(
+        
+        autosize=False,
+        #width=1000,
+        #height=400,
+        #paper_bgcolor='rgba(0,0,0,0)',
+        #plot_bgcolor='rgba(0,0,0,0)',
+        title={
+            'text': "Reason for draw",
+            #'y':0.96,
+            'x':0.5,
+            'xanchor': 'center',
+            'yanchor': 'top'},
+        barmode='stack',
+        template="plotly_dark",
+    )
+
+    
+
+    return fig 
+
+@app.callback(Output('graph-losstype', 'figure'),
+              [Input('input-player','value'), Input('dropdown-timecontrol','value'),Input('date-picker', 'start_date'),Input('date-picker', 'end_date')])
+def update_graph_losstype(player_name, time_control, min_date, max_date):
+
+    df = frame_dict[player_name.lower()]
+
+    df = df[(df["PlayedOn"] >= min_date) & (df["PlayedOn"] <= max_date)]
+
+    df = df[df["loss"] == 1]
+
+    xx = df[["id","outcome"]].groupby(["outcome"]).count().reset_index()
+
+    xx.columns = ["outcome","#games"]
+
+    fig = go.Figure(
+        data=[go.Pie(labels=xx["outcome"], values=xx["#games"], hole=.3)]
+    )
+
+
+    fig.update_layout(
+        
+        autosize=False,
+        #width=1000,
+        #height=400,
+        #paper_bgcolor='rgba(0,0,0,0)',
+        #plot_bgcolor='rgba(0,0,0,0)',
+        title={
+            'text': "Reason for loss",
+            #'y':0.96,
+            'x':0.5,
+            'xanchor': 'center',
+            'yanchor': 'top'},
+        barmode='stack',
+        template="plotly_dark",
+    )
+
+    
+
+    return fig 
 
 ### gtype
 
