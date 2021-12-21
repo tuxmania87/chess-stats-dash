@@ -38,7 +38,7 @@ class ChessGameParser:
         if game_id in self.all_game_ids:
             return
 
-        cnx = mysql.connect(user=self.sql_user, database=self.sql_database, password=self.sql_password)
+        cnx = mysql.connect(host=self.sql_host, user=self.sql_user, database=self.sql_database, password=self.sql_password)
 
         cursor = cnx.cursor()
 
