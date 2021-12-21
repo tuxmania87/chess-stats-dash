@@ -293,4 +293,5 @@ cc = config["DEFAULT"]
 players = cc["PLAYERS_SF"].split(",")
 
 for p in players:
+    print("Handle",p)
     handle_specific_snapshots(p)
