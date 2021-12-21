@@ -172,31 +172,6 @@ def avg_cp_loss(sline, min_move, max_move, white):
     
     return int((np.abs(difflist[1::2]).mean() * 100))
 
-def get_outcome(pgn, draw):
-    game = chess.pgn.read_game(io.StringIO(pgn))
-    
-    if game.headers["Termination"] == "Time forfeit":
-        return "TIME_FORFEIT"
-
-    outcome = game.end().board().outcome().termination.name if game.end().board().outcome() is not None else None
-
-    if outcome is not None:
-        if outcome == "FIVEFOLD_REPETITION":
-            outcome = "THREEFOLD_REPETITION"
-        return outcome
-
-    # check for threefold or fivefold
-
-    if game.end().board().is_repetition():
-        return "THREEFOLD_REPETITION"
-
-    if game.end().board().is_fifty_moves():
-        return "FIFTY_MOVE_RULE"
-
-    
-
-    return "RESIGN" if not draw else "MUTUAL_AGREEMENT"
-
 def assign_daytime(ts):
 
     if ts.hour < 6:
@@ -217,7 +192,7 @@ def handle_specific_snapshots(player):
     db_cursor = db_connection.cursor()  
 
     db_cursor.execute(f''' 
-    select a.*, b.PlayedOn, b.pgn 
+    select a.*, b.PlayedOn
     from vparsedgames2 as a     
      join rawgames as b   
      on a.gameid = b.gameid     
@@ -276,13 +251,8 @@ def handle_specific_snapshots(player):
 
     df["gametype"] = df.apply(lambda x: get_game_type(x["stockfish"], x["result"]), axis=1)
 
+    df["outcome"] = df["endtype"]
     
-    # outcome
-    df["outcome"] = df.apply(lambda x: get_outcome(x["pgn"], x["draw"] == 1), axis=1)
-
-    df = df.drop(["pgn"],axis=1)
-
-
     df.to_csv(f"snapshot_{player}.csv") 
 
     db_connection.close()       

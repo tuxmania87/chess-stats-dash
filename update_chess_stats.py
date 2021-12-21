@@ -58,7 +58,7 @@ class ChessGameParser:
     def get_game_id_list(self):
         game_list = []
 
-        cnx = mysql.connect(user=self.sql_user, database=self.sql_database, password=self.sql_password)
+        cnx = mysql.connect(host=self.sql_host, user=self.sql_user, database=self.sql_database, password=self.sql_password)
 
         cursor = cnx.cursor()
 
@@ -94,7 +94,7 @@ class ChessGameParser:
         qry = "SELECT MAX(PlayedOn) as maxdate from rawgames where source = '"+_sourcename+"'"
         
 
-        cnx = mysql.connect(user=self.sql_user, database=self.sql_database, password=self.sql_password)
+        cnx = mysql.connect(host=self.sql_host, user=self.sql_user, database=self.sql_database, password=self.sql_password)
 
         cursor = cnx.cursor()
         cursor.execute(qry)
@@ -123,7 +123,6 @@ class ChessGameParser:
                  all_games = f.read().strip().split("\n\n\n")
             self.insert_lichess_games(all_games, f"lichess.org "+self.file_names_alias[i])
             i += 1
-
 
     def insert_new_chesscom_games(self):
         # iterate from 2020 beginning until current month
@@ -168,7 +167,7 @@ class ChessGameParser:
          and a.active = 1
         """
 
-        cnx = mysql.connect(user=self.sql_user, database=self.sql_database, password=self.sql_password)
+        cnx = mysql.connect(host=self.sql_host, user=self.sql_user, database=self.sql_database, password=self.sql_password)
 
         cursor = cnx.cursor()
         print("execute not exists query")
@@ -240,18 +239,28 @@ class ChessGameParser:
                     blackelo_pre = "0"
 
             endtype = None
-            if "mate" in g.headers["Termination"]:
-                endtype = "checkmate"
-            elif "resign" in g.headers["Termination"]:
-                endtype = "resignation"
-            elif "canc" in g.headers["Termination"]:
-                endtype = "cancelled"
-            elif "stale" in g.headers["Termination"]:
-                endtype = "stalemate"
-            elif "draw" in g.headers["Termination"]:
-                endtype = "draw"
+            if g.headers["Termination"] == "Time forfeit":
+                endtype = "TIME_FORFEIT"
             else:
-                endtype = g.headers["Termination"]
+                outcome = g.end().board().outcome().termination.name if g.end().board().outcome() is not None else None
+
+                if outcome is not None:
+                    if outcome == "FIVEFOLD_REPETITION":
+                        outcome = "THREEFOLD_REPETITION"
+                    endtype = outcome
+                else:
+
+                    # check for threefold or fivefold
+
+                    if g.end().board().is_repetition():
+                        endtype = "THREEFOLD_REPETITION"
+
+                    elif g.end().board().is_fifty_moves():
+                        endtype =  "FIFTY_MOVE_RULE"
+
+    
+            if endtype is None:
+                endtype = "RESIGN" if g.headers["Result"] != "1/2-1/2" else "MUTUAL_AGREEMENT"
 
             #end_image = chess.svg.board(g.end().board(), size=350)
             #end_image = bytes(renderPM.drawToString(chess.svg.board(g.end().board(), size=350), fmt="PNG"), "utf-8")
@@ -293,7 +302,7 @@ class ChessGameParser:
             if playtime == '-':
                 continue
 
-            cnx2 = mysql.connect(user=self.sql_user, database=self.sql_database, password=self.sql_password)
+            cnx2 = mysql.connect(host=self.sql_host, user=self.sql_user, database=self.sql_database, password=self.sql_password)
 
             c2 = cnx2.cursor()
             print(values)

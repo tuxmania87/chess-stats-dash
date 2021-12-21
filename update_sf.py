@@ -65,8 +65,9 @@ class ChessGameParser:
          where a.active = 1
          and a.source in ({joined_string})
          and b.stockfish = ''
-         and b.playtime >= 600 and b.playtime <=900
          and b.rated = 1
+         and (b.playtime + 40 * b.increment) >= 480 
+         and (b.playtime + 40 * b.increment) < 1499 
         """
 
         print(qry)
