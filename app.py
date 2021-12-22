@@ -388,6 +388,8 @@ def update_graph_elo(player_name, time_control, min_date, max_date):
 
     df = df.set_index("PlayedOn")
 
+    df = df[["elo"]]
+
     df = df.resample("1D").mean().ffill().rolling(3).mean().dropna().reset_index()
 
     fig = px.line(
