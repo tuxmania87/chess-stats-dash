@@ -111,7 +111,7 @@ class ChessGameParser:
 
         print(player_name, maxdate_unix)
 
-        r = requests.get(f"https://lichess.org/api/games/user/{player_name}?perfType=blitz,rapid,classical&since={maxdate_unix}")
+        r = requests.get(f"https://lichess.org/api/games/user/{player_name}?perfType=blitz,rapid,classical&sort=dateAsc&since={maxdate_unix}")
         all_games = r.content.decode("utf-8").strip().split("\n\n\n")
         self.insert_lichess_games(all_games, f"lichess.org {player_name}")
 
@@ -123,6 +123,39 @@ class ChessGameParser:
                  all_games = f.read().strip().split("\n\n\n")
             self.insert_lichess_games(all_games, f"lichess.org "+self.file_names_alias[i])
             i += 1
+
+    def set_games_inactive(self):
+        qry = r"""
+           update rawgames set active = 0 where gameid not in (select gameid from parsedgames2)
+        """
+
+        cnx = mysql.connect(host=self.sql_host, user=self.sql_user, database=self.sql_database, password=self.sql_password)
+
+        cursor = cnx.cursor()
+        print("execute inactive query")
+        cursor.execute(qry)
+
+        cnx.commit()
+        cnx.close()
+
+    def deduplicate_games(self):
+        qry = r"""
+          delete
+from parsedgames2 using parsedgames2,
+    parsedgames2 e1
+where parsedgames2.id > parsedgames2.id
+    and parsedgames2.gameid = parsedgames2.gameid;
+        """
+
+        cnx = mysql.connect(host=self.sql_host, user=self.sql_user, database=self.sql_database, password=self.sql_password)
+
+        cursor = cnx.cursor()
+        print("execute inactive query")
+        cursor.execute(qry)
+
+        cnx.commit()
+        cnx.close()
+
 
     def insert_new_chesscom_games(self):
         # iterate from 2020 beginning until current month
@@ -333,13 +366,22 @@ players = x.cc["PLAYERS_PARSE"].split(",")
 
 for p in players:
     print(f"Handle {p}")
-    x.insert_new_lichess_games(p)
+    try:
+        x.insert_new_lichess_games(p)
+    except:
+        os.remove("INPROGRESS")
+        exit(1)
     time.sleep(1)
 #x.insert_old_tuxmania_games()
 #print("handle new chess com games")
 #x.insert_new_chesscom_games()
 
 x.parse_new_games()
+
+print("Set inactive")
+x.set_games_inactive()
+print("deduplicate")
+x.deduplicate_games()
 
 
 os.remove("INPROGRESS")
