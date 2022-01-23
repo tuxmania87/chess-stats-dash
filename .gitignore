@@ -2,3 +2,6 @@
 general.conf
 token
 *.pyc
+*.pickle
+crawler.txt
+fide_profiles.txt
