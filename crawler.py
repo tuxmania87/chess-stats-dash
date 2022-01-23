@@ -2,12 +2,28 @@ import requests
 import pickle
 from time import sleep
 import json
+import os.path
+
+def dumpcache(cache):
+    textfile = open("crawler.txt", "w")
+    for element in cache:
+        textfile.write(element + "\n")
+    textfile.close()
+
 
 url = "https://lichess.org/api/games/user/!player!?sort=dateDesc&perftype=rapid,blitz&rated=true&max=100"
 
 global_cache = set()
 cache = list()
+i = 0
 
+if os.path.isfile("cache.pickle"):
+    cache = pickle.load( open("cache.pickle", "rb"))
+    global_cache = pickle.load( open("global_cache.pickle","rb"))
+    i = int(pickle.load(open("i.pickle","rb")))
+else:
+    cache.append("tuxmanischerTiger")
+    global_cache.add("tuxmanischerTiger")
 
 
 def get_next_players(playername):
@@ -27,12 +43,9 @@ def get_next_players(playername):
 
 
 
-cache.append("tuxmanischerTiger")
-global_cache.add("tuxmanischerTiger")
 
-i = 0
 
-limit = 3000
+limit = 10000000
 
 while True:
 
@@ -46,16 +59,18 @@ while True:
     print(i, ll)
 
     i += 1
-    sleep(0.5)
+
+    if i % 2 == 0:
+        pickle.dump(cache,open("cache.pickle","wb"))
+        pickle.dump(global_cache,open("global_cache.pickle","wb"))
+        pickle.dump(i, open("i.pickle","wb"))
+        dumpcache(cache)
+
+    sleep(0.2)
 
 
 
-
-textfile = open("crawler.txt", "w")
-for element in cache:
-    textfile.write(element + "\n")
-textfile.close()
-
+dumpcache(cache)
 
 
 
