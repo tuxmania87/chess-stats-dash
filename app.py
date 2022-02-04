@@ -338,14 +338,14 @@ def update_date_picker_start(input):
 def update_date_picker_end(input):   
     
     df = frame_dict[input.lower()]
-    return df.PlayedOn.max().date()
+    return datetime.datetime.combine(df.PlayedOn.max().date(), datetime.datetime.max.time()) 
 
 @app.callback(Output('date-picker', 'initial_visible_month'),
               [Input('input-player', 'value')])
 def update_date_picker_initial(input):   
     
     df = frame_dict[input.lower()]
-    return df.PlayedOn.max().date()
+    return datetime.datetime.combine(df.PlayedOn.max().date(), datetime.datetime.max.time()) 
 
 
 
@@ -429,7 +429,7 @@ def update_graph(player_name, time_control, min_date, max_date):
     y = df[["Year","Month","id"]].groupby(["Year","Month"]).count().reset_index()
     y["time"] = y.apply(lambda x: x["Year"].astype(str) + "-M" + ("0" if x["Month"] < 10 else "") +   x["Month"].astype(str),axis=1)
 
-    
+    print("max", max_date)
     
     #fig = px.bar(
     #        y, x="time",y="id", template="plotly_dark",
