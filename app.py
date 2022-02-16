@@ -82,7 +82,10 @@ players = cc["PLAYERS_SF"].split(",")
 players = sorted(players)
 
 for p in players:
-    frame_dict[p] = pd.read_csv(f"{home_dir}snapshot_{p}.csv")
+    try:
+        frame_dict[p] = pd.read_csv(f"{home_dir}snapshot_{p}.csv")
+    except:
+        pass
 
 for k in frame_dict.keys():
     _df = frame_dict[k]

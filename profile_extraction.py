@@ -69,10 +69,10 @@ for line in crawler_candidates:
     # check if name has fide profile
 
     r = requests.get(url.replace("!player!",line))
-    jj = json.loads(r.content.decode("utf-8"))
 
     
     try:
+        jj = json.loads(r.content.decode("utf-8"))
         handle_profile(jj)
     except:
         pass
